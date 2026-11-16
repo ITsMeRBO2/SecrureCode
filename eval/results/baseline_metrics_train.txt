@@ -1,0 +1,5 @@
+Split : train (981 fichiers)
+   CWE  TP  FP  FN  TN  precision  recall    F1  taux_FP
+CWE-89 217 176   0 588      0.552   1.000 0.711    0.230
+CWE-79 191 283   6 501      0.403   0.970 0.569    0.361
+CWE-22  95  93  11 782      0.505   0.896 0.646    0.106

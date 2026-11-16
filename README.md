@@ -54,9 +54,9 @@ Licences/conditions d'usage, schéma et méthode de partition : à compléter en
 
 ## Feuille de route (9 semaines)
 
-- [ ] S1 Choix CWE + langage, squelette du dépôt
-- [ ] S2 Préparation des données, split train/test
-- [ ] S3 Baseline SAST
+- [x] S1 Choix CWE + langage, squelette du dépôt
+- [x] S2 Préparation des données, split train/test
+- [x] S3 Baseline SAST
 - [ ] S4 Classificateur ML
 - [ ] S5 Aide à la correction GenAI
 - [ ] S6 Pipeline d'analyse + tests

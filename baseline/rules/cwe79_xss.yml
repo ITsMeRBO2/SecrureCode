@@ -1,0 +1,60 @@
+rules:
+  - id: securecode.cwe79.xss
+    mode: taint
+    languages: [java]
+    severity: ERROR
+    message: >-
+      Donnée utilisateur écrite dans la réponse HTML sans encodage (XSS, CWE-79).
+      Encoder la sortie (ex. ESAPI encodeForHTML) avant de l'afficher.
+    metadata:
+      cwe: "CWE-79"
+    pattern-sources:
+      - pattern-either:
+          - pattern: $R.getParameter(...)
+          - pattern: $R.getParameterValues(...)
+          - pattern: $R.getParameterMap(...)
+          - pattern: $R.getParameterNames(...)
+          - pattern: $R.getHeader(...)
+          - pattern: $R.getHeaders(...)
+          - pattern: $R.getQueryString(...)
+          - pattern: $R.getCookies(...)
+          - pattern: $R.getInputStream(...)
+          - pattern: $R.getTheParameter(...)
+          - pattern: $R.getTheValue(...)
+          - pattern: $R.getTheCookies(...)
+    pattern-sanitizers:
+      - pattern-either:
+          - pattern: $E.encodeForHTML(...)
+          - pattern: $E.encodeForHTMLAttribute(...)
+          - pattern: $E.encodeForJavaScript(...)
+          - pattern: $E.encodeForCSS(...)
+          - pattern: $E.encodeForURL(...)
+          - pattern: $U.escapeHtml(...)
+          - pattern: $U.escapeHtml3(...)
+          - pattern: $U.escapeHtml4(...)
+    pattern-propagators:
+      - pattern: $L.add($X)
+        from: $X
+        to: $L
+      - pattern: $L.put($K, $X)
+        from: $X
+        to: $L
+      - pattern: $L.append($X)
+        from: $X
+        to: $L
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: $RESP.getWriter().println($X, ...)
+              - pattern: $RESP.getWriter().print($X, ...)
+              - pattern: $RESP.getWriter().write($X, ...)
+              - pattern: $RESP.getWriter().append($X)
+              - pattern: $RESP.getWriter().printf(..., $X, ...)
+              - pattern: $RESP.getWriter().format(..., $X, ...)
+              - pattern: $RESP.getOutputStream().print($X)
+              - pattern: $RESP.getOutputStream().println($X)
+              - pattern: $RESP.getOutputStream().write($X, ...)
+              - pattern: $W.println($X)
+              - pattern: $W.print($X)
+              - pattern: $W.write($X)
+          - focus-metavariable: $X

@@ -1,0 +1,55 @@
+rules:
+  - id: securecode.cwe89.sql-injection
+    mode: taint
+    languages: [java]
+    severity: ERROR
+    message: >-
+      Donnée utilisateur non assainie utilisée dans une requête SQL (injection SQL, CWE-89).
+      Utiliser un PreparedStatement avec des paramètres liés.
+    metadata:
+      cwe: "CWE-89"
+    pattern-sources:
+      - pattern-either:
+          - pattern: $R.getParameter(...)
+          - pattern: $R.getParameterValues(...)
+          - pattern: $R.getParameterMap(...)
+          - pattern: $R.getParameterNames(...)
+          - pattern: $R.getHeader(...)
+          - pattern: $R.getHeaders(...)
+          - pattern: $R.getQueryString(...)
+          - pattern: $R.getCookies(...)
+          - pattern: $R.getInputStream(...)
+          - pattern: $R.getTheParameter(...)
+          - pattern: $R.getTheValue(...)
+          - pattern: $R.getTheCookies(...)
+    pattern-sanitizers:
+      - pattern-either:
+          - pattern: $E.encodeForSQL(...)
+    pattern-propagators:
+      - pattern: $L.add($X)
+        from: $X
+        to: $L
+      - pattern: $L.put($K, $X)
+        from: $X
+        to: $L
+      - pattern: $L.append($X)
+        from: $X
+        to: $L
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: $S.executeQuery($SQL, ...)
+              - pattern: $S.execute($SQL, ...)
+              - pattern: $S.executeUpdate($SQL, ...)
+              - pattern: $S.executeLargeUpdate($SQL, ...)
+              - pattern: $S.addBatch($SQL)
+              - pattern: $C.prepareStatement($SQL, ...)
+              - pattern: $C.prepareCall($SQL, ...)
+              - pattern: $J.query($SQL, ...)
+              - pattern: $J.queryForObject($SQL, ...)
+              - pattern: $J.queryForList($SQL, ...)
+              - pattern: $J.queryForMap($SQL, ...)
+              - pattern: $J.queryForRowSet($SQL, ...)
+              - pattern: $J.update($SQL, ...)
+              - pattern: $J.batchUpdate($SQL, ...)
+          - focus-metavariable: $SQL
