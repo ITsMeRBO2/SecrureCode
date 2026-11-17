@@ -10,4 +10,7 @@ data/raw/*
 .env
 data/processed/*
 !data/processed/.gitkeep
+<<<<<<< HEAD
 !ml/models/*.joblib
+=======
+>>>>>>> origin/main

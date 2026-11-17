@@ -57,7 +57,11 @@ Licences/conditions d'usage, schéma et méthode de partition : à compléter en
 - [x] S1 Choix CWE + langage, squelette du dépôt
 - [x] S2 Préparation des données, split train/test
 - [x] S3 Baseline SAST
+<<<<<<< HEAD
 - [x] S4 Classificateur ML
+=======
+- [ ] S4 Classificateur ML
+>>>>>>> origin/main
 - [ ] S5 Aide à la correction GenAI
 - [ ] S6 Pipeline d'analyse + tests
 - [ ] S7 Tableau des findings (interface)
