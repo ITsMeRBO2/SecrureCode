@@ -1,0 +1,2 @@
+approach,status,cwe,line,confidence,explanation,validated
+genai,detected,CWE-89,5,,"La ligne 5 utilise une concaténation de chaînes pour former une requête SQL, ce qui expose l'application à une injection SQL. La requête doit être créée à l'aide d'un PreparedStatement pour prévenir cette vulnérabilité.",True

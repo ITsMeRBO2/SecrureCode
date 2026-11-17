@@ -1,0 +1,96 @@
+{
+  "findings": [
+    {
+      "approach": "genai",
+      "status": "detected",
+      "cwe": "CWE-89",
+      "line": 5,
+      "confidence": null,
+      "explanation": "La ligne 5 utilise une concaténation de chaînes pour former une requête SQL, ce qui expose l'application à une injection SQL. La requête doit être créée à l'aide d'un PreparedStatement pour prévenir cette vulnérabilité.",
+      "fixed_code": "import java.sql.Connection;\nimport java.sql.PreparedStatement;\nimport java.sql.SQLException;\n\npublic class TestGenAI {\n    public static void run(Connection connection, String id) throws SQLException {\n        String query = \"SELECT * FROM users WHERE id=?\";\n        PreparedStatement statement = connection.prepareStatement(query);\n        statement.setString(1, id);\n        statement.executeQuery();\n    }\n}",
+      "validation": {
+        "validated": true,
+        "javac": {
+          "ok": true,
+          "message": ""
+        },
+        "baseline": {
+          "ok": true,
+          "message": "0 finding(s) Semgrep restant(s)."
+        },
+        "ml": {
+          "ok": true,
+          "message": "Classe ML : SAFE."
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "baseline": {
+    "status": "ok",
+    "count": 0
+  },
+  "ml": {
+    "status": "ok",
+    "label": "SAFE",
+    "cwe": null,
+    "confidence": 0.792,
+    "top_tokens": [
+      [
+        "'",
+        0.2161
+      ],
+      [
+        "-",
+        0.0983
+      ],
+      [
+        "= \"",
+        0.0788
+      ],
+      [
+        "= \" STR",
+        0.0788
+      ],
+      [
+        ". sql",
+        0.068
+      ],
+      [
+        ". sql .",
+        0.068
+      ],
+      [
+        "java . sql",
+        0.068
+      ],
+      [
+        "sql .",
+        0.068
+      ]
+    ]
+  },
+  "genai": {
+    "status": "ok",
+    "cwe": "CWE-89",
+    "vulnerable_line": 5,
+    "explanation": "La ligne 5 utilise une concaténation de chaînes pour former une requête SQL, ce qui expose l'application à une injection SQL. La requête doit être créée à l'aide d'un PreparedStatement pour prévenir cette vulnérabilité.",
+    "fixed_code": "import java.sql.Connection;\nimport java.sql.PreparedStatement;\nimport java.sql.SQLException;\n\npublic class TestGenAI {\n    public static void run(Connection connection, String id) throws SQLException {\n        String query = \"SELECT * FROM users WHERE id=?\";\n        PreparedStatement statement = connection.prepareStatement(query);\n        statement.setString(1, id);\n        statement.executeQuery();\n    }\n}",
+    "validation": {
+      "validated": true,
+      "javac": {
+        "ok": true,
+        "message": ""
+      },
+      "baseline": {
+        "ok": true,
+        "message": "0 finding(s) Semgrep restant(s)."
+      },
+      "ml": {
+        "ok": true,
+        "message": "Classe ML : SAFE."
+      }
+    }
+  },
+  "status": "ok"
+}
