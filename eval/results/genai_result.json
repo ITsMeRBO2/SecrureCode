@@ -1,0 +1,21 @@
+{
+  "cwe": "CWE-89",
+  "vulnerable_line": 4,
+  "explanation": "La ligne 4 utilise une concaténation SQL non sécurisée, ce qui peut entraîner une injection SQL.",
+  "fixed_code": "import java.sql.Connection;\nimport java.sql.PreparedStatement;\nimport java.sql.SQLException;\n\npublic class TestGenAI {\n    public static void run(Connection connection, String id) throws SQLException {\n        String query = \"SELECT * FROM users WHERE id=?\";\n        PreparedStatement stmt = connection.prepareStatement(query);\n        stmt.setString(1, id);\n        stmt.executeQuery();\n    }\n}",
+  "validation": {
+    "validated": true,
+    "javac": {
+      "ok": true,
+      "message": ""
+    },
+    "baseline": {
+      "ok": true,
+      "message": "0 finding(s) Semgrep restant(s)."
+    },
+    "ml": {
+      "ok": true,
+      "message": "Classe ML : SAFE."
+    }
+  }
+}
