@@ -58,8 +58,8 @@ Licences/conditions d'usage, schéma et méthode de partition : à compléter en
 - [x] S2 Préparation des données, split train/test
 - [x] S3 Baseline SAST
 - [x] S4 Classificateur ML
-- [ ] S5 Aide à la correction GenAI
-- [ ] S6 Pipeline d'analyse + tests
+- [x] S5 Aide à la correction GenAI
+- [x] S6 Pipeline d'analyse + tests
 - [ ] S7 Tableau des findings (interface)
 - [ ] S8 Comparaison + analyse des faux positifs
 - [ ] S9 Démonstration DevSecOps, rapport
@@ -67,6 +67,27 @@ Licences/conditions d'usage, schéma et méthode de partition : à compléter en
 ## Évaluation
 
 Precision / recall par CWE, taux de faux positifs, taux de correctifs validés. Le jeu de test est séparé de l'entraînement dès le départ (pas de data leakage).
+
+## Lancer le pipeline
+
+Depuis PowerShell, à la racine du dépôt :
+
+```powershell
+python -m pipeline.run C:\chemin\vers\code.java
+```
+
+Le pipeline écrit `eval/results/pipeline_result.json` et
+`eval/results/pipeline_findings.csv`. Pour tester la baseline et le ML sans Ollama :
+
+```powershell
+python -m pipeline.run C:\chemin\vers\code.java --no-genai
+```
+
+Avec Ollama :
+
+```powershell
+python -m pipeline.run C:\chemin\vers\code.java --model qwen2.5-coder:7b
+```
 
 ## Équipe
 
