@@ -1,0 +1,50 @@
+rules:
+  - id: securecode.cwe22.path-traversal
+    mode: taint
+    languages: [java]
+    severity: ERROR
+    message: >-
+      Donnée utilisateur utilisée pour construire un chemin de fichier (Path Traversal, CWE-22).
+      Valider/normaliser le chemin et le restreindre à un répertoire autorisé.
+    metadata:
+      cwe: "CWE-22"
+    pattern-sources:
+      - pattern-either:
+          - pattern: $R.getParameter(...)
+          - pattern: $R.getParameterValues(...)
+          - pattern: $R.getParameterMap(...)
+          - pattern: $R.getParameterNames(...)
+          - pattern: $R.getHeader(...)
+          - pattern: $R.getHeaders(...)
+          - pattern: $R.getQueryString(...)
+          - pattern: $R.getCookies(...)
+          - pattern: $R.getInputStream(...)
+          - pattern: $R.getTheParameter(...)
+          - pattern: $R.getTheValue(...)
+          - pattern: $R.getTheCookies(...)
+    pattern-propagators:
+      - pattern: $L.add($X)
+        from: $X
+        to: $L
+      - pattern: $L.put($K, $X)
+        from: $X
+        to: $L
+      - pattern: $L.append($X)
+        from: $X
+        to: $L
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: new java.io.File(..., $P, ...)
+              - pattern: new File(..., $P, ...)
+              - pattern: new java.io.FileInputStream(..., $P, ...)
+              - pattern: new FileInputStream(..., $P, ...)
+              - pattern: new java.io.FileOutputStream(..., $P, ...)
+              - pattern: new FileOutputStream(..., $P, ...)
+              - pattern: new java.io.FileReader(..., $P, ...)
+              - pattern: new FileReader(..., $P, ...)
+              - pattern: new java.io.FileWriter(..., $P, ...)
+              - pattern: new FileWriter(..., $P, ...)
+              - pattern: java.nio.file.Paths.get(..., $P, ...)
+              - pattern: Paths.get(..., $P, ...)
+          - focus-metavariable: $P

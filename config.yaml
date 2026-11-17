@@ -1,0 +1,21 @@
+language: java
+
+cwes:
+  - id: CWE-89
+    name: SQL Injection
+    enabled: true
+  - id: CWE-79
+    name: Cross-site Scripting (XSS)
+    enabled: true
+  - id: CWE-22
+    name: Path Traversal
+    enabled: true   # optionnel : passer à false si le temps manque
+
+data:
+  raw_dir: data/raw
+  processed_dir: data/processed
+  test_size: 0.2
+  random_seed: 42
+
+genai:
+  ollama_model: qwen2.5-coder:7b   # à adapter selon la RAM/GPU

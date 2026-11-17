@@ -1,0 +1,5 @@
+Split : test (246 fichiers)
+   CWE  TP  FP  FN  TN  precision  recall  F1  taux_FP
+CWE-89  55   0   0 191        1.0     1.0 1.0      0.0
+CWE-79  49   0   0 197        1.0     1.0 1.0      0.0
+CWE-22  27   0   0 219        1.0     1.0 1.0      0.0

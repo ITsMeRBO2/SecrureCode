@@ -1,0 +1,82 @@
+{
+  "candidates": [
+    {
+      "model": "logreg",
+      "C": 1,
+      "ngram_max": 2,
+      "cv_f1_macro": 0.8123,
+      "cv_std": 0.0322
+    },
+    {
+      "model": "logreg",
+      "C": 1,
+      "ngram_max": 3,
+      "cv_f1_macro": 0.8463,
+      "cv_std": 0.0244
+    },
+    {
+      "model": "logreg",
+      "C": 10,
+      "ngram_max": 2,
+      "cv_f1_macro": 0.9464,
+      "cv_std": 0.011
+    },
+    {
+      "model": "logreg",
+      "C": 10,
+      "ngram_max": 3,
+      "cv_f1_macro": 0.9553,
+      "cv_std": 0.014
+    },
+    {
+      "model": "logreg",
+      "C": 100,
+      "ngram_max": 2,
+      "cv_f1_macro": 0.9799,
+      "cv_std": 0.0099
+    },
+    {
+      "model": "logreg",
+      "C": 100,
+      "ngram_max": 3,
+      "cv_f1_macro": 0.9827,
+      "cv_std": 0.0091
+    },
+    {
+      "model": "linsvc",
+      "C": 0.1,
+      "ngram_max": 2,
+      "cv_f1_macro": 0.768,
+      "cv_std": 0.0359
+    },
+    {
+      "model": "linsvc",
+      "C": 0.1,
+      "ngram_max": 3,
+      "cv_f1_macro": 0.8127,
+      "cv_std": 0.0325
+    },
+    {
+      "model": "linsvc",
+      "C": 1,
+      "ngram_max": 2,
+      "cv_f1_macro": 0.9437,
+      "cv_std": 0.0124
+    },
+    {
+      "model": "linsvc",
+      "C": 1,
+      "ngram_max": 3,
+      "cv_f1_macro": 0.9523,
+      "cv_std": 0.0088
+    }
+  ],
+  "best": {
+    "model": "logreg",
+    "C": 100,
+    "ngram_max": 3,
+    "cv_f1_macro": 0.9827,
+    "cv_std": 0.0091
+  },
+  "ablation_raw_cv_f1_macro": 1.0
+}

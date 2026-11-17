@@ -1,0 +1,11 @@
+scikit-learn
+pandas
+numpy
+joblib
+semgrep
+ollama
+fastapi
+uvicorn
+streamlit
+pytest
+pyyaml
