@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "baseline"))
 sys.path.insert(0, str(ROOT / "eval"))
 from evaluate import per_cwe_metrics  # noqa: E402
+from run_semgrep import repair_mojibake  # noqa: E402
 
 needs_semgrep = pytest.mark.skipif(shutil.which("semgrep") is None, reason="semgrep absent")
 
@@ -93,3 +94,8 @@ def test_per_cwe_metrics_counts():
     assert m.loc["CWE-89", "precision"] == 0.5 and m.loc["CWE-89", "recall"] == 1.0
     assert m.loc["CWE-79", "FN"] == 1
     assert m.loc["CWE-22", "F1"] == 1.0
+
+
+def test_repair_mojibake_only_when_needed():
+    assert repair_mojibake("DonnÃ©e utilisateur") == "Donnée utilisateur"
+    assert repair_mojibake("Texte déjà correct") == "Texte déjà correct"

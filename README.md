@@ -60,7 +60,7 @@ Licences/conditions d'usage, schéma et méthode de partition : à compléter en
 - [x] S4 Classificateur ML
 - [x] S5 Aide à la correction GenAI
 - [x] S6 Pipeline d'analyse + tests
-- [ ] S7 Tableau des findings (interface)
+- [x] S7 Tableau des findings (interface)
 - [ ] S8 Comparaison + analyse des faux positifs
 - [ ] S9 Démonstration DevSecOps, rapport
 
@@ -88,6 +88,35 @@ Avec Ollama :
 ```powershell
 python -m pipeline.run C:\chemin\vers\code.java --model qwen2.5-coder:7b
 ```
+
+Le pipeline conserve plusieurs findings dans un même fichier : un code peut
+contenir simultanément CWE-89, CWE-79 et CWE-22. GenAI reçoit ces vulnérabilités
+ensemble et propose un seul code corrigé couvrant les trois. Le modèle ML
+historique a été entraîné avec une seule classe par fichier ; sa prédiction est
+utilisée comme signal de confirmation, et non comme preuve unique.
+
+## Interface Streamlit
+
+```powershell
+streamlit run app\streamlit_app.py
+```
+
+L'interface permet de saisir ou importer du Java, d'afficher les findings des
+trois approches et de télécharger les résultats JSON/CSV. Ollama doit être
+actif si GenAI est coché.
+
+Pour compiler les exemples Servlet pendant la validation, télécharge l'API
+`javax.servlet` dans `lib\` :
+
+```powershell
+New-Item -ItemType Directory -Force lib
+Invoke-WebRequest `
+  -Uri https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1.jar `
+  -OutFile lib\javax.servlet-api-4.0.1.jar
+$env:SECURECODE_JAVA_CLASSPATH = (Resolve-Path lib\javax.servlet-api-4.0.1.jar).Path
+```
+
+Le JAR est ignoré par Git. Il sera détecté automatiquement par le validateur.
 
 ## Équipe
 

@@ -22,6 +22,28 @@ rules:
           - pattern: $R.getTheParameter(...)
           - pattern: $R.getTheValue(...)
           - pattern: $R.getTheCookies(...)
+          - pattern: (Scanner $SC).next(...)
+          - pattern: (Scanner $SC).nextLine(...)
+          - pattern: args[...]
+          - pattern: $ARGS[$I]
+    pattern-sanitizers:
+      - pattern-either:
+          - pattern: (Path $P).normalize(...)
+          - pattern: $P.normalize(...)
+          - pattern: (Path $P).toRealPath(...)
+          - pattern: $P.toRealPath(...)
+          - pattern: (Path $P).toAbsolutePath(...)
+          - pattern: $P.toAbsolutePath(...)
+          - pattern: (File $F).getCanonicalPath(...)
+          - pattern: $F.getCanonicalPath(...)
+          - pattern: (File $F).getCanonicalFile(...)
+          - pattern: $F.getCanonicalFile(...)
+          - pattern: FilenameUtils.getName(...)
+          - pattern: org.apache.commons.io.FilenameUtils.getName(...)
+          - pattern: (Path $P).getFileName(...)
+          - pattern: $P.getFileName(...)
+          - pattern: (File $F).getName(...)
+          - pattern: $F.getName(...)
     pattern-propagators:
       - pattern: $L.add($X)
         from: $X
@@ -47,4 +69,27 @@ rules:
               - pattern: new FileWriter(..., $P, ...)
               - pattern: java.nio.file.Paths.get(..., $P, ...)
               - pattern: Paths.get(..., $P, ...)
+              - pattern: java.nio.file.Path.of(..., $P, ...)
+              - pattern: Path.of(..., $P, ...)
+              - pattern: (Path $BASE).resolve($P)
+              - pattern: $BASE.resolve($P)
           - focus-metavariable: $P
+
+  - id: securecode.cwe22.path-concat
+    languages: [java]
+    severity: ERROR
+    message: >-
+      Donnée utilisateur utilisée pour construire un chemin de fichier (Path Traversal, CWE-22).
+      Valider/normaliser le chemin et le restreindre à un répertoire autorisé.
+    metadata:
+      cwe: "CWE-22"
+    patterns:
+      - pattern-either:
+          - pattern: new java.io.File($BASE + $NAME, ...)
+          - pattern: new File($BASE + $NAME, ...)
+          - pattern: java.nio.file.Paths.get($BASE + $NAME, ...)
+          - pattern: Paths.get($BASE + $NAME, ...)
+      - pattern-not: new java.io.File("..." + "...", ...)
+      - pattern-not: new File("..." + "...", ...)
+      - pattern-not: java.nio.file.Paths.get("..." + "...", ...)
+      - pattern-not: Paths.get("..." + "...", ...)

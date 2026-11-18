@@ -22,9 +22,20 @@ rules:
           - pattern: $R.getTheParameter(...)
           - pattern: $R.getTheValue(...)
           - pattern: $R.getTheCookies(...)
+          - pattern: (Scanner $SC).next(...)
+          - pattern: (Scanner $SC).nextLine(...)
+          - pattern: args[...]
+          - pattern: $ARGS[$I]
     pattern-sanitizers:
       - pattern-either:
           - pattern: $E.encodeForSQL(...)
+          - pattern: $PS.setString(...)
+          - pattern: $PS.setInt(...)
+          - pattern: $PS.setLong(...)
+          - pattern: $PS.setDouble(...)
+          - pattern: $PS.setObject(...)
+          - pattern: Integer.parseInt(...)
+          - pattern: Long.parseLong(...)
     pattern-propagators:
       - pattern: $L.add($X)
         from: $X
@@ -53,3 +64,45 @@ rules:
               - pattern: $J.update($SQL, ...)
               - pattern: $J.batchUpdate($SQL, ...)
           - focus-metavariable: $SQL
+
+  - id: securecode.cwe89.sql-concat
+    languages: [java]
+    severity: ERROR
+    message: >-
+      Requête SQL construite par concaténation dynamique (injection SQL, CWE-89).
+      Utiliser un PreparedStatement avec des paramètres liés.
+    metadata:
+      cwe: "CWE-89"
+    patterns:
+      - pattern-either:
+          - pattern: $S.executeQuery($X + $Y, ...)
+          - pattern: $S.executeUpdate($X + $Y, ...)
+          - pattern: $S.execute($X + $Y, ...)
+          - pattern: $S.executeLargeUpdate($X + $Y, ...)
+          - pattern: |
+              $TYPE $Q = $X + $Y;
+              ...
+              $S.executeQuery($Q, ...);
+          - pattern: |
+              $TYPE $Q = $X + $Y;
+              ...
+              $S.executeUpdate($Q, ...);
+          - pattern: |
+              $TYPE $Q = $X + $Y;
+              ...
+              $S.execute($Q, ...);
+      - pattern-not: $S.executeQuery("..." + "...", ...)
+      - pattern-not: $S.executeUpdate("..." + "...", ...)
+      - pattern-not: $S.execute("..." + "...", ...)
+      - pattern-not: |
+          $TYPE $Q = "..." + "...";
+          ...
+          $S.executeQuery($Q, ...);
+      - pattern-not: |
+          $TYPE $Q = "..." + "...";
+          ...
+          $S.executeUpdate($Q, ...);
+      - pattern-not: |
+          $TYPE $Q = "..." + "...";
+          ...
+          $S.execute($Q, ...);

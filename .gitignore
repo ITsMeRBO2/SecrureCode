@@ -7,7 +7,10 @@ data/raw/*
 !data/raw/.gitkeep
 *.class
 *.joblib
+lib/*.jar
 .env
 data/processed/*
 !data/processed/.gitkeep
 !ml/models/*.joblib
+powershell.cmd
+scratch/

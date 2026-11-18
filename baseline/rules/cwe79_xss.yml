@@ -5,7 +5,7 @@ rules:
     severity: ERROR
     message: >-
       Donnée utilisateur écrite dans la réponse HTML sans encodage (XSS, CWE-79).
-      Encoder la sortie (ex. ESAPI encodeForHTML) avant de l'afficher.
+      Encoder la sortie (ex. escapeHtml) avant de l'afficher.
     metadata:
       cwe: "CWE-79"
     pattern-sources:
@@ -22,8 +22,13 @@ rules:
           - pattern: $R.getTheParameter(...)
           - pattern: $R.getTheValue(...)
           - pattern: $R.getTheCookies(...)
+          - pattern: (Scanner $SC).next(...)
+          - pattern: (Scanner $SC).nextLine(...)
+          - pattern: args[...]
+          - pattern: $ARGS[$I]
     pattern-sanitizers:
       - pattern-either:
+          - pattern: escapeHtml(...)
           - pattern: $E.encodeForHTML(...)
           - pattern: $E.encodeForHTMLAttribute(...)
           - pattern: $E.encodeForJavaScript(...)
@@ -32,6 +37,11 @@ rules:
           - pattern: $U.escapeHtml(...)
           - pattern: $U.escapeHtml3(...)
           - pattern: $U.escapeHtml4(...)
+          - pattern: HtmlUtils.htmlEscape(...)
+          - pattern: StringEscapeUtils.escapeHtml(...)
+          - pattern: StringEscapeUtils.escapeHtml4(...)
+          - pattern: org.owasp.encoder.Encode.forHtml(...)
+          - pattern: Encode.forHtml(...)
     pattern-propagators:
       - pattern: $L.add($X)
         from: $X
@@ -54,7 +64,54 @@ rules:
               - pattern: $RESP.getOutputStream().print($X)
               - pattern: $RESP.getOutputStream().println($X)
               - pattern: $RESP.getOutputStream().write($X, ...)
+              - pattern: (PrintWriter $W).println($X)
+              - pattern: (PrintWriter $W).print($X)
+              - pattern: (PrintWriter $W).write($X)
+              - pattern: (PrintWriter $W).append($X)
               - pattern: $W.println($X)
               - pattern: $W.print($X)
               - pattern: $W.write($X)
+              - pattern: $W.append($X)
+          - pattern-not: System.out.println(...)
+          - pattern-not: System.out.print(...)
+          - pattern-not: System.out.write(...)
+          - pattern-not: System.err.println(...)
+          - pattern-not: System.err.print(...)
+          - pattern-not: System.err.write(...)
           - focus-metavariable: $X
+
+  - id: securecode.cwe79.html-append
+    languages: [java]
+    severity: ERROR
+    message: >-
+      Donnée non échappée insérée dans du balisage HTML (XSS, CWE-79).
+      Encoder le contenu (ex. HtmlUtils.htmlEscape, Encode.forHtml, escapeHtml) avant l'insertion.
+    metadata:
+      cwe: "CWE-79"
+    patterns:
+      - pattern-either:
+          - pattern: $SB.append("<" + ... + $VAR + ...)
+          - pattern: $SB.append($VAR)
+      - pattern-inside: |
+          $RET $METHOD(...) {
+            ...
+            $SB.append($HTML);
+            ...
+          }
+      - metavariable-regex:
+          metavariable: $HTML
+          regex: ".*<[a-zA-Z]+.*"
+      - pattern-not: $SB.append("...")
+      - pattern-not: $SB.append("..." + "...")
+      - pattern-not: $SB.append(escapeHtml(...))
+      - pattern-not: $SB.append($E.encodeForHTML(...))
+      - pattern-not: $SB.append($U.escapeHtml(...))
+      - pattern-not: $SB.append(HtmlUtils.htmlEscape(...))
+      - pattern-not: $SB.append(StringEscapeUtils.escapeHtml(...))
+      - pattern-not: $SB.append(StringEscapeUtils.escapeHtml4(...))
+      - pattern-not: $SB.append(Encode.forHtml(...))
+      - pattern-not: $SB.append(org.owasp.encoder.Encode.forHtml(...))
+      - pattern-not: System.out.println(...)
+      - pattern-not: System.out.print(...)
+      - pattern-not: System.err.println(...)
+      - pattern-not: System.err.print(...)
